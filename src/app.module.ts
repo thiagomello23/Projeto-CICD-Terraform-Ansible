@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import "dotenv/config";
 import { Users } from './users/users.entity';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { Users } from './users/users.entity';
       entities: [Users],
       synchronize: !!process.env.DB_SYNC
     }),
-    TypeOrmModule.forFeature([Users])
+    TypeOrmModule.forFeature([Users]),
+    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService],
