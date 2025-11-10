@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import 'dotenv/config';
 import { Users } from './users/users.entity';
 import { UsersModule } from './users/users.module';
+import { BaseEntity } from './database/base-entity';
 
 @Module({
     imports: [
@@ -17,7 +18,7 @@ import { UsersModule } from './users/users.module';
             username: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
-            entities: [Users],
+            entities: [Users, BaseEntity],
             synchronize: !!process.env.DB_SYNC,
         }),
         TypeOrmModule.forFeature([Users]),

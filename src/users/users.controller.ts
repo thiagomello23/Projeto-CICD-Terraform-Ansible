@@ -1,7 +1,19 @@
-import { BadRequestException, Body, Controller, Get, Post } from '@nestjs/common';
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Get,
+    Post,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+    ApiBadRequestResponse,
+    ApiCreatedResponse,
+    ApiOkResponse,
+    ApiOperation,
+    ApiTags,
+} from '@nestjs/swagger';
 import { Users } from './users.entity';
 
 @Controller('users')
@@ -11,15 +23,15 @@ export class UsersController {
 
     @Post()
     @ApiOperation({
-        summary: "Cria um novo usuário",
+        summary: 'Cria um novo usuário',
     })
     @ApiCreatedResponse({
-        description: "Usuário criado com sucesso",
-        type: Users
+        description: 'Usuário criado com sucesso',
+        type: Users,
     })
     @ApiBadRequestResponse({
-        description: "Email já está cadastrado",
-        type: BadRequestException
+        description: 'Email já está cadastrado',
+        type: BadRequestException,
     })
     create(@Body() createUserDto: CreateUserDto) {
         return this.usersService.create(createUserDto);
@@ -27,11 +39,11 @@ export class UsersController {
 
     @Get()
     @ApiOperation({
-        summary: "Pega todos os usuários existentes",
+        summary: 'Pega todos os usuários existentes',
     })
     @ApiOkResponse({
         type: Users,
-        isArray: true
+        isArray: true,
     })
     getAll() {
         return this.usersService.getAll();
