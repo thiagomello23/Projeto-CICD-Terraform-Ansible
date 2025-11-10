@@ -36,7 +36,7 @@ try {
         console.error(
             'Há alterações que precisam de migration, por favor rode npx typeorm migration:generate para conferir!',
         );
-        fs.rmSync(tempMigrationPath, { recursive: true, force: true });
+        // fs.rmSync(tempMigrationPath, { recursive: true, force: true });
         process.exit(0);
     }
 } catch (err: unknown) {

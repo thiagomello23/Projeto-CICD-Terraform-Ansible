@@ -17,7 +17,7 @@ export class UsersService {
             .getMany();
 
         if (validUser?.length > 0) {
-            throw new BadRequestException('Email já em uso!');
+            throw new BadRequestException('Email já está cadastrado');
         }
 
         const user = new Users();
