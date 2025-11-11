@@ -1,24 +1,15 @@
 import { Test } from '@nestjs/testing';
 import { UsersService } from '../../users.service';
 import { Users } from '../../users.entity';
-import { randomUUID } from 'node:crypto';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { CreateUserDto } from '../../dto/create-user.dto';
 import { BadRequestException } from '@nestjs/common';
+import { mockRepository } from '../../../../test/mocks/repository.mock';
+import { mockQueryBuild } from '../../../../test/mocks/query-builder.mock';
+import { createUserDtoFactory } from '../../../../test/factories/users/create-user.dto.factory';
+import { createUserEntityFactory, createUserEntityFactoryByDto } from '../../../../test/factories/users/create-user.entity.factory';
 
 describe('UsersService', () => {
     let usersService: UsersService;
-
-    const mockQueryBuild = {
-        where: jest.fn().mockReturnThis(),
-        getMany: jest.fn(),
-    };
-
-    const mockUsersRepository = {
-        find: jest.fn(),
-        createQueryBuilder: jest.fn(() => mockQueryBuild),
-        save: jest.fn(),
-    };
 
     beforeEach(async () => {
         const moduleRef = await Test.createTestingModule({
@@ -26,7 +17,7 @@ describe('UsersService', () => {
                 UsersService,
                 {
                     provide: getRepositoryToken(Users),
-                    useValue: mockUsersRepository,
+                    useValue: mockRepository,
                 },
             ],
         }).compile();
@@ -36,34 +27,22 @@ describe('UsersService', () => {
 
     describe('create', () => {
         it('Deve criar um usuário com sucesso', async () => {
-            const mockCreateUserDto = new CreateUserDto();
-            mockCreateUserDto.email = 'user@gmail.com';
-            mockCreateUserDto.firstName = 'Test';
-            mockCreateUserDto.lastName = 'Test';
+            const mockCreateUserDto = createUserDtoFactory()
 
-            const mockUser = new Users();
-            mockUser.id = randomUUID();
-            mockUser.email = mockCreateUserDto.email;
-            mockUser.firstName = mockCreateUserDto.firstName;
-            mockUser.lastName = mockCreateUserDto.lastName;
-            mockUser.createdAt = new Date();
-            mockUser.updatedAt = new Date();
+            const mockUser = createUserEntityFactoryByDto(mockCreateUserDto)
 
             mockQueryBuild.getMany.mockReturnValue([]);
-            mockUsersRepository.save.mockReturnValue(mockUser);
+            mockRepository.save.mockReturnValue(mockUser);
 
             const result = await usersService.create(mockCreateUserDto);
 
             expect(result).toEqual(mockUser);
             expect(mockQueryBuild.getMany).toHaveBeenCalledTimes(1);
-            expect(mockUsersRepository.save).toHaveBeenCalledTimes(1);
+            expect(mockRepository.save).toHaveBeenCalledTimes(1);
         });
 
         it('Deve retornar um erro se o usuário já existir', async () => {
-            const mockCreateUserDto = new CreateUserDto();
-            mockCreateUserDto.email = 'user@gmail.com';
-            mockCreateUserDto.firstName = 'Test';
-            mockCreateUserDto.lastName = 'Test';
+            const mockCreateUserDto = createUserDtoFactory()
 
             mockQueryBuild.getMany.mockReturnValue([mockCreateUserDto]);
 
@@ -76,23 +55,16 @@ describe('UsersService', () => {
     describe('getAll', () => {
         it('Deve retornar um array de usuários', async () => {
             const expected: Array<Users> = [
-                {
-                    id: randomUUID().toString(),
-                    firstName: 'Teste',
-                    lastName: 'Test',
-                    email: 'Teste',
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                    deletedAt: new Date(),
-                },
+                createUserEntityFactory(),
+                createUserEntityFactory()
             ];
 
-            mockUsersRepository.find.mockReturnValue(expected);
+            mockRepository.find.mockReturnValue(expected);
 
             const result = await usersService.getAll();
 
             expect(result).toEqual(expected);
-            expect(mockUsersRepository.find).toHaveBeenCalledTimes(1);
+            expect(mockRepository.find).toHaveBeenCalledTimes(1);
         });
     });
 });
