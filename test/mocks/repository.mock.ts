@@ -1,4 +1,4 @@
-import { mockQueryBuild } from "./query-builder.mock";
+import { mockQueryBuild } from './query-builder.mock';
 
 export const mockRepository = {
     find: jest.fn(),

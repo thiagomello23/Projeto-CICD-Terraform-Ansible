@@ -6,7 +6,10 @@ import { BadRequestException } from '@nestjs/common';
 import { mockRepository } from '../../../../test/mocks/repository.mock';
 import { mockQueryBuild } from '../../../../test/mocks/query-builder.mock';
 import { createUserDtoFactory } from '../../../../test/factories/users/create-user.dto.factory';
-import { createUserEntityFactory, createUserEntityFactoryByDto } from '../../../../test/factories/users/create-user.entity.factory';
+import {
+    createUserEntityFactory,
+    createUserEntityFactoryByDto,
+} from '../../../../test/factories/users/create-user.entity.factory';
 
 describe('UsersService', () => {
     let usersService: UsersService;
@@ -27,9 +30,9 @@ describe('UsersService', () => {
 
     describe('create', () => {
         it('Deve criar um usuário com sucesso', async () => {
-            const mockCreateUserDto = createUserDtoFactory()
+            const mockCreateUserDto = createUserDtoFactory();
 
-            const mockUser = createUserEntityFactoryByDto(mockCreateUserDto)
+            const mockUser = createUserEntityFactoryByDto(mockCreateUserDto);
 
             mockQueryBuild.getMany.mockReturnValue([]);
             mockRepository.save.mockReturnValue(mockUser);
@@ -42,7 +45,7 @@ describe('UsersService', () => {
         });
 
         it('Deve retornar um erro se o usuário já existir', async () => {
-            const mockCreateUserDto = createUserDtoFactory()
+            const mockCreateUserDto = createUserDtoFactory();
 
             mockQueryBuild.getMany.mockReturnValue([mockCreateUserDto]);
 
@@ -56,7 +59,7 @@ describe('UsersService', () => {
         it('Deve retornar um array de usuários', async () => {
             const expected: Array<Users> = [
                 createUserEntityFactory(),
-                createUserEntityFactory()
+                createUserEntityFactory(),
             ];
 
             mockRepository.find.mockReturnValue(expected);
